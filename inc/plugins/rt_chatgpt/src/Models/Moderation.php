@@ -15,23 +15,23 @@ namespace rt\ChatGPT\Models;
 
 class Moderation extends AbstractModel
 {
-	private array $response;
-	private string $url = 'https://api.openai.com/v1/moderations';
+    private array $response;
+    private string $url = 'https://api.openai.com/v1/moderations';
 
-	public function __construct(string $message)
-	{
-		parent::__construct();
+    public function __construct(string $message)
+    {
+        parent::__construct();
 
-		$this->action = 'OpenAI Assistant - Thread moderation';
-		$this->method = 'POST';
-		$this->input = $message;
+        $this->action = 'OpenAI Assistant - Thread moderation';
+        $this->method = 'POST';
+        $this->input = $message;
 
-		$this->response = $this->sendRequest($this->url, $message);
-	}
+        $this->response = $this->sendRequest($this->url, $message);
+    }
 
-	public function getResponse(): array
-	{
-		// Work in progress
-		return [];
-	}
+    public function getResponse(): array
+    {
+        // Work in progress
+        return [];
+    }
 }

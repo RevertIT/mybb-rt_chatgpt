@@ -60,20 +60,20 @@ class Core
         return self::is_installed();
     }
 
-	public static function can_bot_reply_to_thread(): bool
-	{
-		global $mybb;
+    public static function can_bot_reply_to_thread(): bool
+    {
+        global $mybb;
 
-		if (isset($mybb->settings['rt_chatgpt_enable_assistant'], $mybb->settings['rt_chatgpt_assistant_bot_id']) &&
-			(int) $mybb->settings['rt_chatgpt_enable_assistant'] === 1 &&
-			(int) $mybb->settings['rt_chatgpt_assistant_bot_id'] > 0
-		)
-		{
-			return true;
-		}
+        if (isset($mybb->settings['rt_chatgpt_enable_assistant'], $mybb->settings['rt_chatgpt_assistant_bot_id']) &&
+            (int) $mybb->settings['rt_chatgpt_enable_assistant'] === 1 &&
+            (int) $mybb->settings['rt_chatgpt_assistant_bot_id'] > 0
+        )
+        {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
     /**
      * Add settings
@@ -129,14 +129,14 @@ class Core
         $PL->settings_delete('rt_chatgpt', true);
     }
 
-	public static function add_database_modifications(): void
-	{
-		global $db;
+    public static function add_database_modifications(): void
+    {
+        global $db;
 
-		switch ($db->type)
-		{
-			case 'pgsql':
-				$db->write_query("
+        switch ($db->type)
+        {
+            case 'pgsql':
+                $db->write_query("
 				 CREATE TABLE IF NOT EXISTS " . TABLE_PREFIX . "rt_chatgpt_logs (
                     id serial,
                     message text NULL,
@@ -146,7 +146,7 @@ class Core
                     PRIMARY KEY (id)
                 );
 				");
-				$db->write_query("
+                $db->write_query("
                 CREATE TABLE IF NOT EXISTS " . TABLE_PREFIX . "rt_chatgpt_config (
                     id serial,
                     model_action text NULL,
@@ -160,9 +160,9 @@ class Core
                     PRIMARY KEY (id)
                 );
             	");
-				break;
-			case 'sqlite':
-				$db->write_query("
+                break;
+            case 'sqlite':
+                $db->write_query("
 				 CREATE TABLE IF NOT EXISTS " . TABLE_PREFIX . "rt_chatgpt_logs (
                     id integer primary key,
                     message text NULL,
@@ -171,7 +171,7 @@ class Core
                     dateline integer NOT NULL,
                 );
 				");
-				$db->write_query("
+                $db->write_query("
                 CREATE TABLE IF NOT EXISTS " . TABLE_PREFIX . "rt_chatgpt_config (
                     id integer primary key,
                     model_action text NULL,
@@ -184,9 +184,9 @@ class Core
                     max_tokens integer NULL,
                 );
             	");
-				break;
-			default:
-				$db->write_query("
+                break;
+            default:
+                $db->write_query("
 				CREATE TABLE IF NOT EXISTS " . TABLE_PREFIX . "rt_chatgpt_logs (
                     id int(11) NOT NULL auto_increment,
                     message text NULL,
@@ -196,7 +196,7 @@ class Core
                     PRIMARY KEY (id)
                 );
 				");
-				$db->write_query("
+                $db->write_query("
                 CREATE TABLE IF NOT EXISTS " . TABLE_PREFIX . "rt_chatgpt_config (
                     id int(11) NOT NULL auto_increment,
                     model_action text NULL,
@@ -210,15 +210,15 @@ class Core
                     PRIMARY KEY (id)
                 );
             	");
-				break;
-		}
-	}
+                break;
+        }
+    }
 
-	public static function remove_database_modifications(): void
-	{
-		global $db;
+    public static function remove_database_modifications(): void
+    {
+        global $db;
 
-		$db->drop_table('rt_chatgpt_logs');
-		$db->drop_table('rt_chatgpt_config');
-	}
+        $db->drop_table('rt_chatgpt_logs');
+        $db->drop_table('rt_chatgpt_config');
+    }
 }
