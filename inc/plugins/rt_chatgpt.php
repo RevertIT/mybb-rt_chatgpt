@@ -19,8 +19,8 @@ if (!defined("IN_MYBB"))
 
 require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/functions.php';
 require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Core.php';
-require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Models\AbstractModel.php';
-require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Models\Post.php';
+require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Models/AbstractModel.php';
+require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Models/Post.php';
 require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Hooks/Frontend.php';
 
 // Hooks manager
