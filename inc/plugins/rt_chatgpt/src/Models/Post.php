@@ -24,6 +24,7 @@ class Post extends AbstractModel
 
         $this->action = 'OpenAI Assistant - Reply to thread';
         $this->method = 'POST';
+        $this->model = 'text-davinci-003';
         $this->temperature = '0';
         $this->top_p = '1';
         $this->frequency_penalty = '0.0';
