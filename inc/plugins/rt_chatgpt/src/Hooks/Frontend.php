@@ -45,29 +45,45 @@ final class Frontend
             // Insert post
             if (!empty($response))
             {
-                $user = get_user($mybb->settings['rt_chatgpt_assistant_bot_id']);
+                $bot = get_user((int) $mybb->settings['rt_chatgpt_assistant_bot_id']);
+                $forumpermissions = forum_permissions((int) $new_thread['fid'], (int) $mybb->settings['rt_chatgpt_assistant_bot_id']);
 
-                if (!$user)
+                // Check if bot is moderator or is user
+                if (!$bot || (int) $forumpermissions['canpostreplys'] === 0)
                 {
                     return;
                 }
 
-                $insert_post = [
+                // Set up posthandler.
+                require_once MYBB_ROOT."inc/datahandlers/post.php";
+
+                $posthandler = new \PostDataHandler("insert");
+                $posthandler->action = "post";
+
+                // Set the post data that came from the input to the $post array.
+                $post = [
                     "tid" => (int) $tid,
                     "fid" => (int) $new_thread['fid'],
                     "subject" => $db->escape_string($new_thread['subject']),
-                    "icon" => 0,
+                    "replyto" => 0,
+                    "icon" => '',
                     "uid" => (int) $mybb->settings['rt_chatgpt_assistant_bot_id'],
-                    "username" => $db->escape_string($user['username']),
-                    "dateline" => TIME_NOW,
                     "message" => $db->escape_string($response),
-                    "ipaddress" => $db->escape_binary('127.0.0.1'),
-                    "includesig" => 1,
-                    "smilieoff" => 1,
-                    "visible" => 1
+                    "ipaddress" => $db->escape_binary(my_inet_pton('127.0.0.1')),
+                    "posthash" => md5($mybb->settings['rt_chatgpt_assistant_bot_id'].random_str()),
+                    'savedraft' => 0
                 ];
 
-                $db->insert_query("posts", $insert_post);
+                // Set up the post options from the input.
+                $post['options'] = [
+                    "signature" => 1,
+                    "subscriptionmethod" => 0,
+                    "disablesmilies" => 0,
+                ];
+
+                $posthandler->set_data($post);
+                $posthandler->validate_post();
+                $posthandler->insert_post();
             }
         }
     }

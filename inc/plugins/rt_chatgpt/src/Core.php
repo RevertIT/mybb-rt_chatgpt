@@ -108,7 +108,7 @@ class Core
                 ],
                 "assistant_bot_id" => [
                     "title" => "[ChatGPT Assistant] - User ID",
-                    "description" => "Set a bot user id which will respond into thread. (The bot will respond into thread regardless of the permissions)",
+                    "description" => "Set a bot user id which will respond into thread. (<b>Make sure bot has sufficient permissions to post in selected forums</b>)",
                     "optionscode" => "numeric",
                     "value" => 1,
                 ],
