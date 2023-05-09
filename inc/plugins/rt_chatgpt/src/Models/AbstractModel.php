@@ -19,11 +19,11 @@ abstract class AbstractModel
     protected string $api_key;
     protected string $model;
     protected string $prompt;
-    protected string $temperature;
+    protected float $temperature;
     protected int $maxTokens;
-    protected string $top_p;
-    protected string $frequency_penalty;
-    protected string $presence_penalty;
+    protected float $top_p;
+    protected float $frequency_penalty;
+    protected float $presence_penalty;
     protected array $stop;
     protected string $action;
     private array $headers;

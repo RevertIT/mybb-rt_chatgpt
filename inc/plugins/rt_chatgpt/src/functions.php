@@ -124,7 +124,7 @@ function get_settings_values(string $name): array
     global $mybb;
 
     return array_filter(
-        explode(',', $mybb->settings[Core::get_plugin_info('prefix') . '_' . $name] ?? '222'),
+        explode(',', $mybb->settings[Core::get_plugin_info('prefix') . '_' . $name] ?? ''),
         'strlen'
     );
 }
