@@ -22,6 +22,8 @@ class Post extends AbstractModel
     {
         parent::__construct();
 
+        $this->api_timeout = 10;
+        $this->maxTokens = 100;
         $this->action = 'OpenAI Assistant - Reply to thread';
         $this->method = 'POST';
         $this->model = 'text-davinci-003';
@@ -29,7 +31,6 @@ class Post extends AbstractModel
         $this->top_p = 1;
         $this->frequency_penalty = 0.0;
         $this->presence_penalty = 0.0;
-        $this->maxTokens = 100;
         $this->stop[] = ["Q: "];
         $this->prompt = "I am a highly intelligent question answering bot. If you ask me a question that is rooted in truth, I will give you the answer. I will use MyBB bbcode format to output the message when needed. If you ask me a question that is nonsense, trickery, or has no clear answer, I will respond with \"Unknown\".\n\nQ: ";
 

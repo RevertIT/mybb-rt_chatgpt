@@ -28,6 +28,7 @@ abstract class AbstractModel
     protected string $action;
     private array $headers;
     protected string $input;
+    protected int $api_timeout;
 
     protected function __construct()
     {
@@ -57,8 +58,12 @@ abstract class AbstractModel
         $opts['headers'] = $this->headers;
 
         $opts['max_redirects'] = 10;
-        $opts['timeout'] = 5;
 
+        $opts['timeout'] = 5;
+        if (isset($this->api_timeout))
+        {
+            $opts['timeout'] = $this->api_timeout;
+        }
         if (isset($this->temperature))
         {
             $opts['data']['temperature'] = $this->temperature;
