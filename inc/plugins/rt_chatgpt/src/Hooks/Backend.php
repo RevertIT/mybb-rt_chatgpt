@@ -130,6 +130,9 @@ final class Backend
                 $form = new \Form("index.php?module=tools-{$prefix}&amp;action=logs", "post", "logs");
                 $table->construct_header($form->generate_check_box("allbox", 1, '', array('class' => 'checkall')));
                 $table->construct_header($lang->{$prefix . '_logs_message'});
+                $table->construct_header($lang->{$prefix . '_logs_oid'});
+                $table->construct_header($lang->{$prefix . '_logs_model'});
+                $table->construct_header($lang->{$prefix . '_logs_used_tokens'});
                 $table->construct_header($lang->{$prefix . '_logs_action'});
                 $table->construct_header($lang->{$prefix . '_logs_status'});
                 $table->construct_header($lang->{$prefix . '_logs_dateline'}, [
@@ -150,11 +153,26 @@ final class Backend
                     $row['dateline'] = my_date('relative', $row['dateline']);
                     $row['message'] = htmlspecialchars_uni($row['message']);
                     $row['action'] = htmlspecialchars_uni($row['action']);
+                    $row['oid'] = isset($row['oid']) ? htmlspecialchars_uni($row['oid']) : $lang->na;
+                    $row['model'] = isset($row['model']) ? htmlspecialchars_uni($row['model']) : $lang->na;
+                    $row['used_tokens'] = isset($row['used_tokens']) ? (int) $row['used_tokens'] : $lang->na;
 
                     $table->construct_cell($form->generate_check_box("log[{$row['id']}]", $row['id'], ''));
 
                     $table->construct_cell($row['message'], [
                         'class' =>  'align_left',
+                    ]);
+
+                    $table->construct_cell($row['oid'], [
+                        'class' => 'align_left'
+                    ]);
+
+                    $table->construct_cell($row['model'], [
+                        'class' => 'align_left'
+                    ]);
+
+                    $table->construct_cell($row['used_tokens'], [
+                        'class' => 'align_left'
                     ]);
 
                     $table->construct_cell($row['action'], [

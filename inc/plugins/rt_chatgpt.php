@@ -45,6 +45,7 @@ function rt_chatgpt_install(): void
     \rt\ChatGPT\load_pluginlibrary();
 
     \rt\ChatGPT\Core::add_database_modifications();
+    \rt\ChatGPT\Core::add_task();
 }
 
 function rt_chatgpt_is_installed(): bool
@@ -59,6 +60,7 @@ function rt_chatgpt_uninstall(): void
 
     \rt\ChatGPT\Core::remove_settings();
     \rt\ChatGPT\Core::remove_database_modifications();
+    \rt\ChatGPT\Core::remove_task();
 
 }
 

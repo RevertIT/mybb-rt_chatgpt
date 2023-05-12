@@ -122,16 +122,34 @@ abstract class AbstractModel
         }
     }
 
-    protected static function logApiStatus(string $action, string $message, int $status)
+    protected static function logApiStatus(string $action, string $message, int $status, int $oid = null, string $model = null, int $used_tokens = null)
     {
         global $db;
 
-        $db->insert_query("rt_chatgpt_logs", [
+        $data = [
             'message' => $db->escape_string($message),
             'action' => $db->escape_string($action),
             'status' => $status,
             'dateline' => TIME_NOW,
-        ]);
+        ];
+
+        if (isset($oid))
+        {
+            $data['oid'] = (int) $oid;
+        }
+        if (isset($model))
+        {
+            $data['model'] = $db->escape_string($model);
+        }
+        if (isset($model))
+        {
+            $data['model'] = $db->escape_string($model);
+        }
+        if (isset($used_tokens))
+        {
+            $data['used_tokens'] = $db->escape_string($used_tokens);
+        }
+        $db->insert_query("rt_chatgpt_logs", $data);
     }
 
     protected abstract function getResponse();

@@ -21,7 +21,7 @@ class Core
         'description' => 'RT ChatGPT utilizes OpenAI API to generate responses and do tasks.<br><br><a href="index.php?module=tools-rt_chatgpt"><strong>ChatGPT Tools</strong></a>',
         'author' => 'RevertIT',
         'authorsite' => 'https://github.com/RevertIT/',
-        'version' => '0.1',
+        'version' => '0.2',
         'compatibility' => '18*',
         'codename' => 'rt_chatgpt',
         'prefix' => 'rt_chatgpt',
@@ -141,6 +141,9 @@ class Core
                     id serial,
                     message text NULL,
                     action text NULL,
+                    oid text NULL,
+                    model text NULL,
+                    used_tokens int NULL,
                     status int NULL,
                     dateline int NOT NULL,
                     PRIMARY KEY (id)
@@ -167,6 +170,9 @@ class Core
                     id integer primary key,
                     message text NULL,
                     action text NULL,
+                    oid text NULL,
+                    model text NULL,
+                    used_tokens integer NULL,
                     status integer NULL,
                     dateline integer NOT NULL,
                 );
@@ -191,6 +197,9 @@ class Core
                     id int(11) NOT NULL auto_increment,
                     message text NULL,
                     action text NULL,
+                    oid text NULL,
+                    model text NULL,
+                    used_tokens int NULL,
                     status int NULL,
                     dateline int(11) NOT NULL,
                     PRIMARY KEY (id)
@@ -220,5 +229,38 @@ class Core
 
         $db->drop_table('rt_chatgpt_logs');
         $db->drop_table('rt_chatgpt_config');
+    }
+
+    public static function add_task()
+    {
+        global $db, $cache;
+
+        // tasks
+        $task = [
+            'title'       => 'RT ChatGPT',
+            'description' => 'Performs scheduled operations for the Amnesia extension.',
+            'file'        => 'rt_chatgpt',
+            'minute'      => '1,6,11,16,21,26,31,36,41,46,51,56',
+            'hour'        => '*',
+            'day'         => '*',
+            'month'       => '*',
+            'weekday'     => '*',
+            'enabled'     => '1',
+            'logging'     => '1',
+        ];
+
+        require_once MYBB_ROOT . '/inc/functions_task.php';
+
+        $task['nextrun'] = fetch_next_run($task);
+        $db->insert_query('tasks', $task);
+
+        $cache->update_tasks();
+    }
+
+    public static function remove_task()
+    {
+        global $db;
+
+        $db->delete_query('tasks', 'file = "rt_chatgpt"');
     }
 }
