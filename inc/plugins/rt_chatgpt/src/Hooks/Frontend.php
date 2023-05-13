@@ -20,7 +20,7 @@ final class Frontend
 {
     public function global_start()
     {
-        global $mybb;
+        //global $mybb;
 
     }
 
@@ -31,7 +31,7 @@ final class Frontend
      */
     public function newthread_do_newthread_end(): void
     {
-        global $mybb, $db, $lang, $new_thread, $tid;
+        global $mybb, $lang, $new_thread, $tid;
 
         // Reply to the thread with OpenAI
         if (Core::can_bot_reply_to_thread() &&
@@ -81,6 +81,18 @@ final class Frontend
             $post_details = $posthandler->insert_post();
 
             (new \rt\ChatGPT\Models\Post())->cacheNewReply($post_details);
+        }
+
+        // Moderate thread
+        if (Core::thread_will_go_through_moderation_check())
+        {
+            $data = [
+                'tid' => $tid,
+                'subject' => $new_thread['subject'],
+                'message' => $new_thread['subject'],
+            ];
+
+            (new \rt\ChatGPT\Models\Moderation())->cacheThreadForModeration($data);
         }
     }
 }

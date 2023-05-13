@@ -23,7 +23,7 @@ class Post extends AbstractModel
         parent::__construct();
 
         $this->api_timeout = 30;
-        $this->maxTokens = 100;
+        $this->maxTokens = 500;
         $this->action = 'OpenAI Assistant - Reply to thread';
         $this->method = 'POST';
         $this->model = 'text-davinci-003';

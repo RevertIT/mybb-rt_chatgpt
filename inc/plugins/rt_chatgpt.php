@@ -21,12 +21,16 @@ require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/functions.php';
 require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Core.php';
 require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Models/AbstractModel.php';
 require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Models/Post.php';
-require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Hooks/Frontend.php';
 
 // Hooks manager
 if (defined('IN_ADMINCP'))
 {
     require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Hooks/Backend.php';
+}
+
+if (\rt\ChatGPT\Core::is_enabled())
+{
+    require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Hooks/Frontend.php';
 }
 
 \rt\ChatGPT\autoload_plugin_hooks([

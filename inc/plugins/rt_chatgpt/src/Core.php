@@ -18,10 +18,10 @@ class Core
     public static array $PLUGIN_DETAILS = [
         'name' => 'RT ChatGPT',
         'website' => 'https://github.com/RevertIT/mybb-rt_chatgpt',
-        'description' => 'RT ChatGPT utilizes OpenAI API to generate responses and do tasks.<br><br><a href="index.php?module=tools-rt_chatgpt"><strong>ChatGPT Tools</strong></a>',
+        'description' => 'RT ChatGPT utilizes OpenAI API to generate responses and do specific tasks. <b>This plugin uses task system which will run every 5 minutes.</b>.<br><br><a href="index.php?module=tools-rt_chatgpt"><strong>ChatGPT Tools</strong></a>',
         'author' => 'RevertIT',
         'authorsite' => 'https://github.com/RevertIT/',
-        'version' => '0.2',
+        'version' => '0.3',
         'compatibility' => '18*',
         'codename' => 'rt_chatgpt',
         'prefix' => 'rt_chatgpt',
@@ -57,7 +57,7 @@ class Core
 
     public static function is_enabled(): bool
     {
-        return self::is_installed();
+        return isset($mybb->settings['rt_chatgpt_enabled']) && (int) $mybb->settings['rt_chatgpt_enabled'] === 1;
     }
 
     public static function can_bot_reply_to_thread(): bool
@@ -67,6 +67,21 @@ class Core
         if (isset($mybb->settings['rt_chatgpt_enable_assistant'], $mybb->settings['rt_chatgpt_assistant_bot_id']) &&
             (int) $mybb->settings['rt_chatgpt_enable_assistant'] === 1 &&
             (int) $mybb->settings['rt_chatgpt_assistant_bot_id'] > 0
+        )
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function thread_will_go_through_moderation_check(): bool
+    {
+        global $mybb;
+
+        if (isset($mybb->settings['rt_chatgpt_enable_moderation'], $mybb->settings['rt_chatgpt_moderation_forums'], $mybb->settings['rt_chatgpt_moderation_usergroups']) &&
+            is_member($mybb->settings['rt_chatgpt_moderation_usergroups'], $mybb->user['uid']) &&
+            (int) $mybb->settings['rt_chatgpt_enable_moderation'] === 1
         )
         {
             return true;
@@ -108,7 +123,7 @@ class Core
                 ],
                 "assistant_bot_id" => [
                     "title" => "[ChatGPT Assistant] - User ID",
-                    "description" => "Set a bot user id which will respond into thread. (<b>Make sure bot has sufficient permissions to post in selected forums</b>)",
+                    "description" => "Set a bot user id which will respond into thread. (<b>The bot needs permissions to respond in forums you select below</b>)",
                     "optionscode" => "numeric",
                     "value" => 1,
                 ],
@@ -118,11 +133,42 @@ class Core
                     "optionscode" => "forumselect",
                     "value" => '',
                 ],
+                "enable_moderation" => [
+                    "title" => "ChatGPT Thread moderation",
+                    "description" => "This option will use a specific AI module to check whether post contains harmful/hateful/offensive content and put it into moderation for review.",
+                    "optionscode" => "yesno",
+                    "value" => 0
+                ],
+                "moderation_model" => [
+                    "title" => "[ChatGPT Moderation] - Moderation model",
+                    "description" => "Select by comma separation which content should the ChatGPT check for:
+					  <br>1 = hate
+					  <br>2 = hate/threatening
+					  <br>3 = self-harm
+					  <br>4 = sexual
+					  <br>5 = sexual/minors
+					  <br>6 = violence
+					  <br>7 = violence/graphic",
+                    "optionscode" => "text",
+                    "value" => "1,2,5,6,7"
+                ],
+                "moderation_forums" => [
+                    "title" => "[ChatGPT Moderation] - Forums to watch",
+                    "description" => "Select which forums should the ChatGPT look for and filter the newly posted content based on moderation score.",
+                    "optionscode" => "forumselect",
+                    "value" => '',
+                ],
+                "moderation_usergroups" => [
+                    "title" => "[ChatGPT Moderation] - Usergroups to watch",
+                    "description" => "Select which usergroups should the ChatGPT watch and moderate. (Selected groups will always have all posts checked before they publicly appear)",
+                    "optionscode" => "groupselect",
+                    "value" => '0,1',
+                ],
             ],
         );
     }
 
-    public static function remove_settings()
+    public static function remove_settings(): void
     {
         global $PL;
 
@@ -225,13 +271,25 @@ class Core
 
     public static function remove_database_modifications(): void
     {
-        global $db;
+        global $db, $mybb, $page, $lang;
 
-        $db->drop_table('rt_chatgpt_logs');
-        $db->drop_table('rt_chatgpt_config');
+
+        if ($mybb->request_method !== 'post')
+        {
+            $lang->load('rt_chatgpt');
+
+            $page->output_confirm_action('index.php?module=config-plugins&action=deactivate&uninstall=1&plugin=' . self::$PLUGIN_DETAILS['prefix'], $lang->rt_chatgpt_uninstall_message, $lang->uninstall);
+        }
+
+        // Drop tables
+        if (!isset($mybb->input['no']))
+        {
+            $db->drop_table('rt_chatgpt_logs');
+            $db->drop_table('rt_chatgpt_config');
+        }
     }
 
-    public static function add_task()
+    public static function add_task(): void
     {
         global $db, $cache;
 
@@ -257,10 +315,18 @@ class Core
         $cache->update_tasks();
     }
 
-    public static function remove_task()
+    public static function remove_task(): void
     {
         global $db;
 
         $db->delete_query('tasks', 'file = "rt_chatgpt"');
+    }
+
+    public static function remove_cache()
+    {
+        global $cache;
+
+        $cache->delete('rt_chatgpt_reply');
+        $cache->delete('rt_chatgpt_moderation');
     }
 }

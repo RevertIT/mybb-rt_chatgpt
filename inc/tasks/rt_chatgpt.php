@@ -9,6 +9,7 @@ function task_rt_chatgpt(array $task): void
     if (class_exists('\rt\ChatGPT\Core'))
     {
         (new \rt\ChatGPT\Models\Post())->updateReplyWithAiResponse();
+        (new \rt\ChatGPT\Models\Moderation())->moderateThread();
     }
 
     add_task_log($task, $lang->rt_chatgpt_task_ran);

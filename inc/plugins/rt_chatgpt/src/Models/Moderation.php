@@ -18,20 +18,121 @@ class Moderation extends AbstractModel
     private array $response;
     private string $url = 'https://api.openai.com/v1/moderations';
 
-    public function __construct(string $message)
+    public function __construct()
     {
         parent::__construct();
 
         $this->action = 'OpenAI Assistant - Thread moderation';
         $this->method = 'POST';
-        $this->input = $message;
+        $this->model = 'text-moderation-001';
+    }
 
+    public function setRequest(string $message): bool
+    {
+        $this->input = $message;
         $this->response = $this->sendRequest($this->url, $message);
+
+        if (!empty($this->response))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function cacheThreadForModeration(array $thread): bool
+    {
+        global $cache;
+
+        $data = $cache->read('rt_chatgpt_moderation');
+        $data[] = $thread;
+
+        $cache->update('rt_chatgpt_moderation', $data);
+
+        return true;
     }
 
     public function getResponse(): array
     {
-        // Work in progress
-        return [];
+        if (!isset($this->response['results']))
+        {
+            return [];
+        }
+
+        // Log successful api response
+        $api_score = json_encode($this->response['results'][0]['category_scores']);
+        self::logApiStatus($this->action, $api_score, 1, $this->response['id'], $this->response['model']);
+
+        return $this->response;
+    }
+
+    public function moderateThread(): void
+    {
+        global $cache, $db;
+
+        $cached_data = $cache->read('rt_chatgpt_moderation');
+
+        if (empty($cached_data))
+        {
+            return;
+        }
+
+        require_once MYBB_ROOT."inc/class_moderation.php";
+        $thread_moderation = new \Moderation();
+
+        foreach ($cached_data as $row)
+        {
+            $query = $db->simple_select('threads', '*', "tid = '{$db->escape_string($row['tid'])}'");
+            $thread = $db->fetch_array($query);
+
+            // Post not found in DB
+            if (!$thread)
+            {
+                continue;
+            }
+
+            $message = "{$row['subject']} - {$row['message']}";
+
+            // Send request to the API
+            $openai = $this->setRequest($message);
+
+            // Failed to retrieve data from API
+            if (!$openai)
+            {
+                continue;
+            }
+
+            // Get API answer
+            $moderation = $this->getResponse();
+
+            // Failed to retrieve message from API
+            if (empty($moderation))
+            {
+                continue;
+            }
+
+            // Moderate thread
+            $flagged = \rt\ChatGPT\get_settings_values('moderation_model');
+            $flagged_model = array_keys($moderation['results'][0]['flagged']);
+            $openai_categories = $moderation['results'][0]['categories'];
+
+            // Loop through AI categories
+            foreach ($openai_categories as $m)
+            {
+                // Loop through settings with flagged selected options
+                foreach ($flagged as $f)
+                {
+                    // Check if flagged option is set and check if it is flagged via API
+                    if (isset($flagged_model[$f]) && $m === true)
+                    {
+                        $thread_moderation->unapprove_threads($row['tid']);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Clear moderation queue
+        $cache->delete('rt_chatgpt_moderation');
     }
 }

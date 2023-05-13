@@ -42,7 +42,6 @@ abstract class AbstractModel
         ];
     }
 
-
     /**
      * @param string $url
      * @param string $message
@@ -122,7 +121,7 @@ abstract class AbstractModel
         }
     }
 
-    protected static function logApiStatus(string $action, string $message, int $status, string $oid = null, string $model = null, int $used_tokens = null)
+    protected static function logApiStatus(string $action, string $message, int $status, string $oid = null, string $model = null, int $used_tokens = null): void
     {
         global $db;
 
@@ -152,5 +151,6 @@ abstract class AbstractModel
         $db->insert_query("rt_chatgpt_logs", $data);
     }
 
+    protected abstract function setRequest(string $message): bool;
     protected abstract function getResponse();
 }
