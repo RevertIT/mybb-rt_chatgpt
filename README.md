@@ -22,8 +22,9 @@ RT ChatGPT is a plugin which utilizes OpenAI API to generate responses in select
 ### 📃 Features
 - Using strict typing declaration.
 - Easy to configure options
-- ChatGPT will respond when new thread has been created and give response to the question in selected forums by selected user id.
-- Logs of failed/successful responses by OpenAI.
+- ChatGPT AI to respond in threads for selected forums
+- ChatGPT AI to moderate threads and unapprove threads which are offensive/harmful/etc.
+- Logs of failed/successful actions by OpenAI.
 - More features to come.
 
 ### ➕ Installation
