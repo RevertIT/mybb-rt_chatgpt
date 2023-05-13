@@ -57,6 +57,8 @@ class Core
 
     public static function is_enabled(): bool
     {
+        global $mybb;
+
         return isset($mybb->settings['rt_chatgpt_enabled']) && (int) $mybb->settings['rt_chatgpt_enabled'] === 1;
     }
 
