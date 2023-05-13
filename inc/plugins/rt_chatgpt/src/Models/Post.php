@@ -89,7 +89,6 @@ class Post extends AbstractModel
 
         foreach ($cached_data as $row)
         {
-
             $query = $db->simple_select('posts', '*', "pid = '{$db->escape_string($row['pid'])}'");
             $post = $db->fetch_array($query);
 

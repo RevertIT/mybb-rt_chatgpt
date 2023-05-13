@@ -64,7 +64,7 @@ final class Frontend
                 "icon" => '',
                 "uid" => (int) $mybb->settings['rt_chatgpt_assistant_bot_id'],
                 "message" => $lang->rt_chatgpt_wait_response,
-                "ipaddress" => $db->escape_binary(my_inet_pton('127.0.0.1')),
+                "ipaddress" => my_inet_pton('127.0.0.1'),
                 "posthash" => md5($mybb->settings['rt_chatgpt_assistant_bot_id'].random_str()),
                 'savedraft' => 0
             ];
