@@ -80,4 +80,6 @@ function rt_chatgpt_deactivate(): void
 {
     \rt\ChatGPT\check_php_version();
     \rt\ChatGPT\load_pluginlibrary();
+
+    \rt\ChatGPT\Core::remove_cache();
 }
