@@ -122,7 +122,7 @@ abstract class AbstractModel
         }
     }
 
-    protected static function logApiStatus(string $action, string $message, int $status, int $oid = null, string $model = null, int $used_tokens = null)
+    protected static function logApiStatus(string $action, string $message, int $status, string $oid = null, string $model = null, int $used_tokens = null)
     {
         global $db;
 
@@ -135,7 +135,7 @@ abstract class AbstractModel
 
         if (isset($oid))
         {
-            $data['oid'] = (int) $oid;
+            $data['oid'] = $db->escape_string($oid);
         }
         if (isset($model))
         {
