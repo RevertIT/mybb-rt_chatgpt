@@ -137,7 +137,16 @@ class Post extends AbstractModel
             ];
 
             $posthandler->set_data($post);
-            $posthandler->validate_post();
+            if (!$posthandler->validate_post())
+            {
+                $post_errors = $posthandler->get_friendly_errors();
+                $post_errors = inline_error($post_errors);
+                self::logApiStatus($this->action, $post_errors, 0);
+            }
+            else
+            {
+                $posthandler->update_post();
+            }
             $posthandler->update_post();
         }
 

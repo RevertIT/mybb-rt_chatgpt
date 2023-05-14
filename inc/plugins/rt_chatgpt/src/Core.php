@@ -298,7 +298,7 @@ class Core
         // tasks
         $task = [
             'title'       => 'RT ChatGPT',
-            'description' => 'Performs scheduled operations for the Amnesia extension.',
+            'description' => 'Performs scheduled operations for RT ChatGPT.',
             'file'        => 'rt_chatgpt',
             'minute'      => '1,6,11,16,21,26,31,36,41,46,51,56',
             'hour'        => '*',

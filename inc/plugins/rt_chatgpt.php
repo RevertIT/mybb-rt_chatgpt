@@ -21,6 +21,7 @@ require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/functions.php';
 require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Core.php';
 require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Models/AbstractModel.php';
 require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Models/Post.php';
+require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Models/Moderation.php';
 
 // Hooks manager
 if (defined('IN_ADMINCP'))
