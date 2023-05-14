@@ -147,7 +147,6 @@ class Post extends AbstractModel
             {
                 $posthandler->update_post();
             }
-            $posthandler->update_post();
         }
 
         $cache->delete('rt_chatgpt_reply');

@@ -77,10 +77,12 @@ final class Frontend
             ];
 
             $posthandler->set_data($post);
-            $posthandler->validate_post();
-            $post_details = $posthandler->insert_post();
 
-            (new \rt\ChatGPT\Models\Post())->cacheNewReply($post_details);
+            if ($posthandler->validate_post())
+            {
+                $post_details = $posthandler->insert_post();
+                (new \rt\ChatGPT\Models\Post())->cacheNewReply($post_details);
+            }
         }
 
         // Moderate thread
