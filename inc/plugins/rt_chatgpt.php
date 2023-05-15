@@ -71,6 +71,7 @@ function rt_chatgpt_uninstall(): void
     \rt\ChatGPT\Core::remove_settings();
     \rt\ChatGPT\Core::remove_database_modifications();
     \rt\ChatGPT\Core::remove_task();
+    \rt\ChatGPT\Core::remove_cache();
 }
 
 function rt_chatgpt_activate(): void

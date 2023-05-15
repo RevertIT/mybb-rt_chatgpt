@@ -99,7 +99,7 @@ class Post extends AbstractModel
             }
 
             // Send request to the API
-            $openai = $this->setRequest($post['message']);
+            $openai = $this->setRequest($row['message']);
 
             // Failed to retrieve data from API
             if (!$openai)

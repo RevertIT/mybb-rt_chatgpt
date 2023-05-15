@@ -79,7 +79,7 @@ final class Backend
                         {
                             $db->delete_query("rt_chatgpt_logs", "id IN ({$log_ids})");
                             $num_deleted = $db->affected_rows();
-			
+
                             // Log admin action
                             log_admin_action($num_deleted);
                         }

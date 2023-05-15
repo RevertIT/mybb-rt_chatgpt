@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace rt\ChatGPT\Hooks;
 
 use rt\ChatGPT\Core;
-use rt\ChatGPT\Models\Post;
 
 final class Frontend
 {
+
     /**
      * Hook: newthread_do_newthread_end
      *
@@ -74,7 +74,11 @@ final class Frontend
 
             if ($posthandler->validate_post())
             {
-                $post_details = $posthandler->insert_post();
+                $post_details = [
+                    'pid' => (int) $posthandler->insert_post()['pid'],
+                    'tid' => (int) $tid,
+                    'message' => $new_thread['message'],
+                ];
                 (new \rt\ChatGPT\Models\Post())->cacheNewReply($post_details);
             }
         }
@@ -85,7 +89,7 @@ final class Frontend
             $data = [
                 'tid' => $tid,
                 'subject' => $new_thread['subject'],
-                'message' => $new_thread['subject'],
+                'message' => $new_thread['message'],
             ];
 
             (new \rt\ChatGPT\Models\Moderation())->cacheThreadForModeration($data);
