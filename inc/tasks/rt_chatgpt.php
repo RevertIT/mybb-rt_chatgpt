@@ -6,6 +6,7 @@ function task_rt_chatgpt(array $task): void
 
     $lang->load('rt_chatgpt');
 
+    // Failcheck for the task in case the plugin is deleted, but task is still somehow active.
     if (class_exists('\rt\ChatGPT\Core'))
     {
         (new \rt\ChatGPT\Models\Post())->updateReplyWithAiResponse();
