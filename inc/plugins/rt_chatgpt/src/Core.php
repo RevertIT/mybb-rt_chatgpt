@@ -324,10 +324,31 @@ class Core
         $db->delete_query('tasks', 'file = "rt_chatgpt"');
     }
 
+    /**
+     * Set plugin cache
+     *
+     * @return void
+     */
+    public static function set_cache(): void
+    {
+        global $cache;
+
+        if (!empty(self::$PLUGIN_DETAILS))
+        {
+            $cache->update(self::$PLUGIN_DETAILS['prefix'], self::$PLUGIN_DETAILS);
+        }
+    }
+
+    /**
+     * Remove plugin cache
+     *
+     * @return void
+     */
     public static function remove_cache()
     {
         global $cache;
 
+	$cache->delete('rt_chatgpt');
         $cache->delete('rt_chatgpt_reply');
         $cache->delete('rt_chatgpt_moderation');
     }
