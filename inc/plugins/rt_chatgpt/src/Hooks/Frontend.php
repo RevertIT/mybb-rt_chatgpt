@@ -18,12 +18,6 @@ use rt\ChatGPT\Models\Post;
 
 final class Frontend
 {
-    public function global_start()
-    {
-        //global $mybb;
-
-    }
-
     /**
      * Hook: newthread_do_newthread_end
      *
