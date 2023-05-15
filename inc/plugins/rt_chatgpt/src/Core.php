@@ -18,7 +18,7 @@ class Core
     public static array $PLUGIN_DETAILS = [
         'name' => 'RT ChatGPT',
         'website' => 'https://github.com/RevertIT/mybb-rt_chatgpt',
-        'description' => 'RT ChatGPT utilizes OpenAI API to generate responses and do specific tasks. <b>This plugin uses task system which will run every 5 minutes.<br><br><a href="index.php?module=tools-rt_chatgpt"><strong>ChatGPT Tools</strong></a></b>',
+        'description' => 'RT ChatGPT utilizes OpenAI API to generate responses and do specific tasks. <b>This plugin uses task system which will run every 5 minutes.</b>',
         'author' => 'RevertIT',
         'authorsite' => 'https://github.com/RevertIT/',
         'version' => '0.3',
