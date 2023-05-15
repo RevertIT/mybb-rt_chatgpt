@@ -167,6 +167,14 @@ function load_plugin_version(): void
         }
         else
         {
+            // Add link for tools management
+            if (Core::is_enabled() && Core::is_installed())
+            {
+                Core::$PLUGIN_DETAILS['description'] .= <<<DESC
+                <br><br><a href="index.php?module=tools-rt_chatgpt"><strong>ChatGPT Tools</strong></a>
+                DESC;
+            }
+
             Core::$PLUGIN_DETAILS['description'] .= <<<DESC
 			<br/>
 			<b style="color: green">

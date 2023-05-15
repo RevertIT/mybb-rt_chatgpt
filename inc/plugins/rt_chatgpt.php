@@ -84,6 +84,6 @@ function rt_chatgpt_activate(): void
 
 function rt_chatgpt_deactivate(): void
 {
-    \rt\LivChatGPTeSearch\check_php_version();
+    \rt\ChatGPT\check_php_version();
     \rt\ChatGPT\check_pluginlibrary();
 }
