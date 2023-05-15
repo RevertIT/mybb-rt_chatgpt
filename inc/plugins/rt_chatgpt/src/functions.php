@@ -56,6 +56,129 @@ function check_php_version(): void
 }
 
 /**
+ * PluginLibrary loader
+ *
+ * @return void
+ */
+function load_pluginlibrary(): void
+{
+    global $PL, $config, $mybb;
+
+    if (!defined('PLUGINLIBRARY'))
+    {
+        define('PLUGINLIBRARY', MYBB_ROOT . 'inc/plugins/pluginlibrary.php');
+    }
+
+    if (file_exists(PLUGINLIBRARY))
+    {
+        if (!$PL)
+        {
+            require_once PLUGINLIBRARY;
+        }
+        if (version_compare((string) $PL->version, '13', '<'))
+        {
+            Core::$PLUGIN_DETAILS['description'] .= <<<DESC
+			<br/>
+			<b style="color: orange">
+				<img src="{$mybb->settings['bburl']}/{$config['admin_dir']}/styles/default/images/icons/warning.png" alt="">
+				PluginLibrary version is outdated. You can update it by <a href="https://community.mybb.com/mods.php?action=view&pid=573" target="_blank">clicking here</a>.
+			</b>
+			DESC;
+        }
+        else
+        {
+            Core::$PLUGIN_DETAILS['description'] .= <<<DESC
+			<br/>
+			<b style="color: green">
+				<img src="{$mybb->settings['bburl']}/{$config['admin_dir']}/styles/default/images/icons/tick.png" alt="">
+				PluginLibrary (ver-{$PL->version}) is installed.
+			</b>
+			DESC;
+        }
+    }
+    else
+    {
+        Core::$PLUGIN_DETAILS['description'] .= <<<DESC
+		<br/>
+		<b style="color: orange">
+			<img src="{$mybb->settings['bburl']}/{$config['admin_dir']}/styles/default/images/icons/warning.png" alt="">
+			PluginLibrary is missing. You can download it by <a href="https://community.mybb.com/mods.php?action=view&pid=573" target="_blank">clicking here</a>.
+		</b>
+		DESC;
+    }
+}
+
+/**
+ * PluginLibrary install checker
+ *
+ * @return void
+ */
+function check_pluginlibrary(): void
+{
+    global $PL;
+
+    if (!defined('PLUGINLIBRARY'))
+    {
+        define('PLUGINLIBRARY', MYBB_ROOT . 'inc/plugins/pluginlibrary.php');
+    }
+
+    if (file_exists(PLUGINLIBRARY))
+    {
+        if (!$PL)
+        {
+            require_once PLUGINLIBRARY;
+        }
+        if (version_compare((string) $PL->version, '13', '<'))
+        {
+            flash_message("PluginLibrary version is outdated. You can update it by <a href=\"https://community.mybb.com/mods.php?action=view&pid=573\">clicking here</a>.", "error");
+            admin_redirect("index.php?module=config-plugins");
+        }
+    }
+    else
+    {
+        flash_message("PluginLibrary is missing. You can download it by <a href=\"https://community.mybb.com/mods.php?action=view&pid=573\">clicking here</a>.", "error");
+        admin_redirect("index.php?module=config-plugins");
+    }
+}
+
+/**
+ * Plugin version loader
+ *
+ * @return void
+ */
+function load_plugin_version(): void
+{
+    global $cache, $mybb, $config;
+
+    $cached_version = $cache->read(Core::get_plugin_info('prefix'));
+    $current_version = Core::get_plugin_info('version');
+
+    if (isset($cached_version['version'], $current_version))
+    {
+        if (version_compare($cached_version['version'], Core::get_plugin_info('version'), '<'))
+        {
+            Core::$PLUGIN_DETAILS['description'] .= <<<DESC
+			<br/>
+			<b style="color: orange">
+			<img src="{$mybb->settings['bburl']}/{$config['admin_dir']}/styles/default/images/icons/warning.png" alt="">
+			RT ChatGPT version missmatch. You need to deactivate and activate plugin again.
+			</b>
+			DESC;
+        }
+        else
+        {
+            Core::$PLUGIN_DETAILS['description'] .= <<<DESC
+			<br/>
+			<b style="color: green">
+			<img src="{$mybb->settings['bburl']}/{$config['admin_dir']}/styles/default/images/icons/tick.png" alt="">
+			RT ChatGPT (ver-{$current_version}) is up-to-date and ready for use.
+			</b>
+			DESC;
+        }
+    }
+}
+
+/**
  * Fetch api request
  *
  * @param string $url
@@ -127,37 +250,4 @@ function get_settings_values(string $name): array
         explode(',', $mybb->settings[Core::get_plugin_info('prefix') . '_' . $name] ?? ''),
         'strlen'
     );
-}
-
-/**
- * PluginLibrary check loader
- *
- * @return void
- */
-function load_pluginlibrary(): void
-{
-    global $PL;
-
-    if (!defined('PLUGINLIBRARY'))
-    {
-        define('PLUGINLIBRARY', MYBB_ROOT . 'inc/plugins/pluginlibrary.php');
-    }
-
-    if (file_exists(PLUGINLIBRARY))
-    {
-        if (!$PL)
-        {
-            require_once PLUGINLIBRARY;
-        }
-        if (version_compare((string) $PL->version, '13', '<'))
-        {
-            flash_message("PluginLibrary version is outdated. You can update it by <a href=\"https://community.mybb.com/mods.php?action=view&pid=573\">clicking here</a>.", "error");
-            admin_redirect("index.php?module=config-plugins");
-        }
-    }
-    else
-    {
-        flash_message("PluginLibrary is missing. You can download it by <a href=\"https://community.mybb.com/mods.php?action=view&pid=573\">clicking here</a>.", "error");
-        admin_redirect("index.php?module=config-plugins");
-    }
 }
