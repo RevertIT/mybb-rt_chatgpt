@@ -49,6 +49,7 @@ function rt_chatgpt_install(): void
     \rt\ChatGPT\check_php_version();
     \rt\ChatGPT\load_pluginlibrary();
 
+    \rt\LiveSearch\Core::set_cache();
     \rt\ChatGPT\Core::add_database_modifications();
     \rt\ChatGPT\Core::add_task();
 }
@@ -60,8 +61,8 @@ function rt_chatgpt_is_installed(): bool
 
 function rt_chatgpt_uninstall(): void
 {
-    \rt\ChatGPT\check_php_version();
-    \rt\ChatGPT\load_pluginlibrary();
+    \rt\LiveSearch\check_php_version();
+    \rt\LiveSearch\check_pluginlibrary();
 
     \rt\ChatGPT\Core::remove_settings();
     \rt\ChatGPT\Core::remove_database_modifications();
@@ -70,16 +71,15 @@ function rt_chatgpt_uninstall(): void
 
 function rt_chatgpt_activate(): void
 {
-    \rt\ChatGPT\check_php_version();
-    \rt\ChatGPT\load_pluginlibrary();
+    \rt\LiveSearch\check_php_version();
+    \rt\LiveSearch\check_pluginlibrary();
 
+    \rt\LiveSearch\Core::set_cache();
     \rt\ChatGPT\Core::add_settings();
 }
 
 function rt_chatgpt_deactivate(): void
 {
-    \rt\ChatGPT\check_php_version();
-    \rt\ChatGPT\load_pluginlibrary();
-
-    \rt\ChatGPT\Core::remove_cache();
+    \rt\LiveSearch\check_php_version();
+    \rt\LiveSearch\check_pluginlibrary();
 }
