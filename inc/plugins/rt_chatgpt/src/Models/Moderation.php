@@ -24,7 +24,6 @@ class Moderation extends AbstractModel
 
         $this->action = 'OpenAI Assistant - Thread moderation';
         $this->method = 'POST';
-        $this->model = 'text-moderation-001';
     }
 
     public function setRequest(string $message): bool
@@ -61,7 +60,7 @@ class Moderation extends AbstractModel
 
         // Log successful api response
         $api_score = json_encode($this->response['results'][0]['category_scores']);
-        self::logApiStatus($this->action, $api_score, 1, $this->response['id'], $this->response['model']);
+        self::logApiStatus($this->action, $api_score, 1, $this->response['id']);
 
         return $this->response;
     }
