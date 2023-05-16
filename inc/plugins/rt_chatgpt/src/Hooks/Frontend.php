@@ -84,7 +84,9 @@ final class Frontend
         }
 
         // Moderate thread
-        if (Core::thread_will_go_through_moderation_check())
+        if (Core::thread_will_go_through_moderation_check() &&
+            (in_array($new_thread['fid'], \rt\ChatGPT\get_settings_values('moderation_forums')) || in_array(-1, \rt\ChatGPT\get_settings_values('moderation_forums')))
+        )
         {
             $data = [
                 'tid' => $tid,
