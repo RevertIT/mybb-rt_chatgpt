@@ -21,7 +21,7 @@ class Core
         'description' => 'RT ChatGPT utilizes OpenAI API to generate responses and do specific tasks. <b>This plugin uses task system which will run every 5 minutes.</b>',
         'author' => 'RevertIT',
         'authorsite' => 'https://github.com/RevertIT/',
-        'version' => '0.4',
+        'version' => '0.5',
         'compatibility' => '18*',
         'codename' => 'rt_chatgpt',
         'prefix' => 'rt_chatgpt',
