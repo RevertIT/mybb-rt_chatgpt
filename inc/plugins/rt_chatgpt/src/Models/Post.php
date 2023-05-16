@@ -20,6 +20,10 @@ class Post extends AbstractModel
 
     public function __construct()
     {
+        global $lang;
+
+        $lang->load('rt_chatgpt');
+
         parent::__construct();
 
         $this->api_timeout = 30;
@@ -32,7 +36,7 @@ class Post extends AbstractModel
         $this->frequency_penalty = 0.0;
         $this->presence_penalty = 0.0;
         $this->stop[] = "Q: ";
-        $this->prompt = "I am a highly intelligent question answering bot. I will use MyBB BBCode to output the answer. If you ask me a question that is nonsense, trickery, or has no clear answer, I will respond with \"Unknown\". Q: ";
+        $this->prompt = "I am a highly intelligent question answering bot. I will use MyBB BBCode to output the answer. If you ask me a question that is nonsense, trickery, or has no clear answer, I will respond with \"{$lang->rt_chatgpt_response_negative}\". Q: ";
     }
 
     public function setRequest(string $message): bool
