@@ -31,7 +31,7 @@ class Post extends AbstractModel
         $this->top_p = 1;
         $this->frequency_penalty = 0.0;
         $this->presence_penalty = 0.0;
-        $this->stop[] = ["Q: "];
+        $this->stop[] = "Q: ";
         $this->prompt = "I am a highly intelligent question answering bot. I will use MyBB BBCode to output the answer. If you ask me a question that is nonsense, trickery, or has no clear answer, I will respond with \"Unknown\". Q: ";
     }
 
