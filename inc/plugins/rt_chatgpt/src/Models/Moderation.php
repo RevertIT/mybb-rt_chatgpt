@@ -112,21 +112,16 @@ class Moderation extends AbstractModel
 
             // Moderate thread
             $flagged_settings = \rt\ChatGPT\get_settings_values('moderation_model');
-            $openai_categories = $moderation['results'][0]['categories'];
-            $openai_categories_key = array_keys($openai_categories);
+            $openai_categories = array_values($moderation['results'][0]['categories']);
 
-            // Loop through AI categories
-            foreach ($openai_categories as $flagged)
+            // Loop through settings with flagged selected options
+            foreach ($flagged_settings as $setting)
             {
-                // Loop through settings with flagged selected options
-                foreach ($flagged_settings as $setting)
+                // Check if flagged option is set and check if it is flagged via API
+                if (isset($openai_categories[$setting]) && (int) $openai_categories[$setting] === 1)
                 {
-                    // Check if flagged option is set and check if it is flagged via API
-                    if (isset($openai_categories_key[$setting]) && (int) $flagged === 1)
-                    {
-                        $thread_moderation->unapprove_threads($row['tid']);
-                        break;
-                    }
+                    $thread_moderation->unapprove_threads($row['tid']);
+                    break;
                 }
             }
         }
