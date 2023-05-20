@@ -17,27 +17,31 @@ if (!defined("IN_MYBB"))
     die("Direct initialization of this file is not allowed.");
 }
 
-require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/functions.php';
-require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Core.php';
-require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Models/AbstractModel.php';
-require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Models/Post.php';
-require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Models/Moderation.php';
+// Autoload classes
+require_once MYBB_ROOT . 'inc/plugins/rt/vendor/autoload.php';
 
+\rt\Autoload\psr4_autoloader(
+    'rt',
+    'src',
+    'rt\\ChatGPT\\',
+    [
+        'rt/ChatGPT/functions.php',
+    ]
+);
+
+$hooks = [];
 // Hooks manager
 if (defined('IN_ADMINCP'))
 {
-    require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Hooks/Backend.php';
+    $hooks[] = '\rt\ChatGPT\Hooks\Backend';
 }
-
 if (\rt\ChatGPT\Core::is_enabled())
 {
-    require MYBB_ROOT . 'inc/plugins/rt_chatgpt/src/Hooks/Frontend.php';
+    $hooks[] = '\rt\ChatGPT\Hooks\Frontend';
 }
 
-\rt\ChatGPT\autoload_plugin_hooks([
-    '\rt\ChatGPT\Hooks\Frontend',
-    '\rt\ChatGPT\Hooks\Backend',
-]);
+// Autoload plugin hooks
+\rt\ChatGPT\autoload_plugin_hooks($hooks);
 
 // Health checks
 \rt\ChatGPT\load_plugin_version();
