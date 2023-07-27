@@ -70,7 +70,7 @@ class Post extends AbstractModel
         global $cache;
 
         $data = $cache->read('rt_chatgpt_reply');
-        $data = !empty($data) && is_array($data) ? $data + $newData : $data;
+        $data = !empty($data) && is_array($data) ? $data + $newData : $newData;
 
         $cache->update('rt_chatgpt_reply', $data);
 
