@@ -70,7 +70,7 @@ class Post extends AbstractModel
         global $cache;
 
         $data = $cache->read('rt_chatgpt_reply');
-        $data[] = $newData;
+        $data = !empty($data) && is_array($data) ? $data + $newData : $newData;
 
         $cache->update('rt_chatgpt_reply', $data);
 
@@ -102,7 +102,7 @@ class Post extends AbstractModel
                 continue;
             }
 
-            // Send request to the API
+            // Send a request to the API
             $openai = $this->setRequest($row['message']);
 
             // Failed to retrieve data from API
@@ -114,7 +114,7 @@ class Post extends AbstractModel
             // Get API answer
             $message = $this->getResponse();
 
-            // Failed to retrieve message from API
+            // Failed to retrieve a message from API
             if (empty($message))
             {
                 continue;
