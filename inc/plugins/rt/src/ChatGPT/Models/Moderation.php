@@ -44,7 +44,7 @@ class Moderation extends AbstractModel
         global $cache;
 
         $data = $cache->read('rt_chatgpt_moderation');
-        $data[] = $thread;
+        $data = !empty($data) && is_array($data) ? $data + $thread : $thread;
 
         $cache->update('rt_chatgpt_moderation', $data);
 
