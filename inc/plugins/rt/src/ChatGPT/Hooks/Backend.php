@@ -90,11 +90,11 @@ final class Backend
                 }
 
                 $query = $db->write_query(<<<SQL
-		SELECT
-			COUNT(*) as logs
-		FROM
-			{$table_prefix}rt_chatgpt_logs
-		SQL);
+                SELECT
+                    COUNT(*) as logs
+                FROM
+                    {$table_prefix}rt_chatgpt_logs
+                SQL);
 
                 $total_rows = $db->fetch_field($query, "logs");
 

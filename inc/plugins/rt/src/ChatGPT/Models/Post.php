@@ -41,11 +41,20 @@ class Post extends AbstractModel
 
     public function setRequest(string $message): bool
     {
-        $this->response = $this->sendRequest($this->url, $message);
-
-        if (!empty($this->response))
+        try
         {
-            return true;
+            $this->response = $this->sendRequest($this->url, $message);
+
+            if (!empty($this->response))
+            {
+                return true;
+            }
+        }
+        catch (\Exception $e)
+        {
+            self::logApiStatus($this->action, $e->getMessage(), 0);
+
+            return false;
         }
 
         return false;
@@ -157,5 +166,4 @@ class Post extends AbstractModel
 
         $cache->delete('rt_chatgpt_reply');
     }
-
 }

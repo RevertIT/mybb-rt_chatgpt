@@ -29,11 +29,21 @@ class Moderation extends AbstractModel
     public function setRequest(string $message): bool
     {
         $this->input = $message;
-        $this->response = $this->sendRequest($this->url, $message);
 
-        if (!empty($this->response))
+        try
         {
-            return true;
+            $this->response = $this->sendRequest($this->url, $message);
+
+            if (!empty($this->response))
+            {
+                return true;
+            }
+        }
+        catch (\Exception $e)
+        {
+            self::logApiStatus($this->action, $e->getMessage(), 0);
+
+            return false;
         }
 
         return false;
@@ -98,6 +108,7 @@ class Moderation extends AbstractModel
             // Failed to retrieve data from API
             if (!$openai)
             {
+                self::logApiStatus($this->action, 'Unable to send setRequest() method.', 0);
                 continue;
             }
 
@@ -107,6 +118,7 @@ class Moderation extends AbstractModel
             // Failed to retrieve message from API
             if (empty($moderation))
             {
+                self::logApiStatus($this->action, 'Unable to receive data from getResponse() method.', 0);
                 continue;
             }
 

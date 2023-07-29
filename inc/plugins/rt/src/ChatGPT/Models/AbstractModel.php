@@ -45,7 +45,8 @@ abstract class AbstractModel
     /**
      * @param string $url
      * @param string $message
-     * @return array|null
+     * @return array
+     * @throws \Exception
      */
     protected function sendRequest(string $url, string $message): array
     {
@@ -100,6 +101,8 @@ abstract class AbstractModel
             $opts['data']['input'] = $this->input;
         }
 
+        $json = [];
+
         try
         {
             $apiResponse = \rt\ChatGPT\fetch_api($url, $opts['method'], $opts['data'], $opts['headers'], $opts['max_redirects'], $opts['timeout']);
@@ -108,18 +111,21 @@ abstract class AbstractModel
 
             if (isset($json['error']))
             {
-                self::logApiStatus($this->action, $json['error']['message'], 0);
                 throw new \Exception($json['error']['message']);
             }
 
-            return $json;
+            if (!is_array($json))
+            {
+                throw new \Exception('Invalid JSON data.');
+            }
+
         }
         catch (\Exception $exception)
         {
             self::logApiStatus($this->action, $exception->getMessage(), 0);
-
-            return [];
         }
+
+        return $json;
     }
 
     protected static function logApiStatus(string $action, string $message, int $status, string $oid = null, string $model = null, int $used_tokens = null): void
