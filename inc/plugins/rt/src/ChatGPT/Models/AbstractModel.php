@@ -108,6 +108,7 @@ abstract class AbstractModel
 
             if (isset($json['error']))
             {
+                self::logApiStatus($this->action, $json['error']['message'], 0);
                 throw new \Exception($json['error']['message']);
             }
 

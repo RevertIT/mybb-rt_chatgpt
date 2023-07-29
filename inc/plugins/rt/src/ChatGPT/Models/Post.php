@@ -102,21 +102,23 @@ class Post extends AbstractModel
                 continue;
             }
 
-            // Send a request to the API
+            // Send request to the API
             $openai = $this->setRequest($row['message']);
 
             // Failed to retrieve data from API
             if (!$openai)
             {
+                self::logApiStatus($this->action, 'Unable to send setRequest() method.', 0);
                 continue;
             }
 
             // Get API answer
             $message = $this->getResponse();
 
-            // Failed to retrieve a message from API
+            // Failed to retrieve message from API
             if (empty($message))
             {
+                self::logApiStatus($this->action, 'Unable to receive data from getResponse() method.', 0);
                 continue;
             }
 
