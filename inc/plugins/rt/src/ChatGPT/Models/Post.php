@@ -13,14 +13,43 @@ declare(strict_types=1);
 
 namespace rt\ChatGPT\Models;
 
+use MyBB;
+
 class Post extends AbstractModel
 {
     private array $response;
-    private string $url = 'https://api.openai.com/v1/completions';
+
+    /*
+     * Reference: https://platform.openai.com/docs/api-reference/chat
+     *
+     * Response:
+     * {
+          "id": "chatcmpl-123",
+          "object": "chat.completion",
+          "created": 1677652288,
+          "model": "gpt-3.5-turbo-0613",
+          "system_fingerprint": "fp_44709d6fcb",
+          "choices": [{
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "\n\nHello there, how may I assist you today?",
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }],
+          "usage": {
+            "prompt_tokens": 9,
+            "completion_tokens": 12,
+            "total_tokens": 21
+          }
+        }
+     */
+    private string $url = 'https://api.openai.com/v1/chat/completions';
 
     public function __construct()
     {
-        global $lang;
+        global $lang, $mybb;
 
         $lang->load('rt_chatgpt');
 
@@ -30,7 +59,7 @@ class Post extends AbstractModel
         $this->maxTokens = 500;
         $this->action = 'OpenAI Assistant - Reply to thread';
         $this->method = 'POST';
-        $this->model = 'text-davinci-003';
+        $this->model = $mybb->settings['rt_chatgpt_openai_model'];
         $this->temperature = 0;
         $this->top_p = 1;
         $this->frequency_penalty = 0.0;
@@ -62,16 +91,16 @@ class Post extends AbstractModel
 
     public function getResponse(): string
     {
-        if (!isset($this->response['choices'][0]['text']))
+        if (!isset($this->response['choices'][0]['message']['content']))
         {
             return '';
         }
 
         // Log successful api response
-        $data = "Message: {$this->response['choices'][0]['text']}";
+        $data = "Message: {$this->response['choices'][0]['message']['content']}";
         self::logApiStatus($this->action, $data, 1, $this->response['id'], $this->response['model'], $this->response['usage']['total_tokens']);
 
-        return $this->response['choices'][0]['text'];
+        return $this->response['choices'][0]['message']['content'];
     }
 
     public function cacheNewReply(array $newData): bool
