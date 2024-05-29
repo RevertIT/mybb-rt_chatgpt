@@ -15,6 +15,7 @@ namespace rt\ChatGPT\Models;
 
 abstract class AbstractModel
 {
+    protected \MyBB $mybb;
     protected string $method;
     protected string $api_key;
     protected string $model;
@@ -34,7 +35,7 @@ abstract class AbstractModel
     {
         global $mybb;
 
-        $this->api_key = $mybb->settings['rt_chatgpt_open_api_key'] ?? '';
+        $this->api_key = $mybb->settings['rt_chatgpt_openai_key'] ?? '';
 
         $this->headers = [
             "Content-Type: application/json",
@@ -74,7 +75,10 @@ abstract class AbstractModel
         }
         if (isset($this->prompt))
         {
-            $opts['data']['prompt'] = $this->prompt . $message;
+            $opts['data']['messages'][] = [
+                'role' => 'user',
+                'content' => $this->prompt . $message
+            ];
         }
         if (isset($this->top_p))
         {
