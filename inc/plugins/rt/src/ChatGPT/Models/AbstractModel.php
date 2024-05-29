@@ -75,7 +75,7 @@ abstract class AbstractModel
         }
         if (isset($this->prompt))
         {
-            $opts['data']['messages'] = [
+            $opts['data']['messages'][] = [
                 'role' => 'user',
                 'content' => $this->prompt . $message
             ];

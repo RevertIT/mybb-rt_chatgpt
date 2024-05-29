@@ -21,7 +21,7 @@ class Core
         'description' => 'RT ChatGPT utilizes OpenAI API to generate responses and do specific tasks. <b>This plugin uses task system which will run every 5 minutes.</b>',
         'author' => 'RevertIT',
         'authorsite' => 'https://github.com/RevertIT/',
-        'version' => '1.2b',
+        'version' => '1.3',
         'compatibility' => '18*',
         'codename' => 'rt_chatgpt',
         'prefix' => 'rt_chatgpt',
@@ -122,9 +122,11 @@ class Core
                     "description" => "Select which model will be used when generating an API responses to the posts/threads",
                     "optionscode" => <<<SELECT
                     select
+                    gpt-4o=GPT-4o (New)
                     gpt-4=GPT-4
-                    gpt-4-turbo-preview=GPT-4 Turbo
+                    gpt-4-turbo=GPT-4 Turbo
                     gpt-3.5-turbo=GPT 3.5 Turbo
+                    gpt-3.5-turbo-16k=GPT 3.5 Turbo (version with larger context window)
                     SELECT,
                     "value" => "gpt-3.5-turbo",
                 ],
