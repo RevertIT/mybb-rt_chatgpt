@@ -1,6 +1,6 @@
 <?php
-$l['rt_chatgpt_wait_response'] = "Generating response... It will take up to five minutes for this message to be updated.
+$l['rt_chatgpt_wait_response'] = "This post is currently awaiting OpenAI API response. Once it is updated, it will be visible to the public.
 
-[i]If this message is not updated within five minutes, please report it to the administrator.[/i]";
+PS: It shouldn't me manually approved or deleted, but if its not updated within 5~ minutes, please check out RT ChatGPT logs.";
 $l['rt_chatgpt_response_negative'] = 'I don\'t know the answer to the given question or the question is unethical or manipulative.';
 $l['rt_chatgpt_task_ran'] = 'Task ran successfully';
