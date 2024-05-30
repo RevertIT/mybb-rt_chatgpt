@@ -165,19 +165,20 @@ class Post extends AbstractModel
 
             // Set the post data that came from the input to the $post array.
             $post = [
-                "pid" => (int) $post['pid'],
-                "subject" => $post['subject'],
-                "icon" => '',
-                "uid" => (int) $post['uid'],
-                "message" => $message,
-                "edit_uid" => (int) $post['uid'],
+                'pid' => (int) $post['pid'],
+                'subject' => $post['subject'],
+                'icon' => '',
+                'uid' => (int) $post['uid'],
+                'message' => $message,
+                'edit_uid' => (int) $post['uid'],
+                'visible' => 1
             ];
 
             // Set up the post options from the input.
             $post['options'] = [
-                "signature" => 1,
-                "subscriptionmethod" => 0,
-                "disablesmilies" => 0,
+                'signature' => 1,
+                'subscriptionmethod' => 0,
+                'disablesmilies' => 0,
             ];
 
             $posthandler->set_data($post);

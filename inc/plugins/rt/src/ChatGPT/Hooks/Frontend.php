@@ -51,23 +51,24 @@ final class Frontend
 
             // Set the post data that came from the input to the $post array.
             $post = [
-                "tid" => (int) $tid,
-                "fid" => (int) $new_thread['fid'],
-                "subject" => $new_thread['subject'],
-                "replyto" => 0,
-                "icon" => '',
-                "uid" => (int) $mybb->settings['rt_chatgpt_assistant_bot_id'],
-                "message" => $lang->rt_chatgpt_wait_response,
-                "ipaddress" => my_inet_pton('127.0.0.1'),
-                "posthash" => md5($mybb->settings['rt_chatgpt_assistant_bot_id'].random_str()),
-                'savedraft' => 0
+                'tid' => (int) $tid,
+                'fid' => (int) $new_thread['fid'],
+                'subject' => $new_thread['subject'],
+                'replyto' => 0,
+                'icon' => '',
+                'uid' => (int) $mybb->settings['rt_chatgpt_assistant_bot_id'],
+                'message' => $lang->rt_chatgpt_wait_response,
+                'ipaddress' => my_inet_pton('127.0.0.1'),
+                'posthash' => md5($mybb->settings['rt_chatgpt_assistant_bot_id'].random_str()),
+                'savedraft' => 0,
+                'visible' => 0 // post will be invisible to general members at insertion
             ];
 
             // Set up the post options from the input.
             $post['options'] = [
-                "signature" => 1,
-                "subscriptionmethod" => 0,
-                "disablesmilies" => 0,
+                'signature' => 1,
+                'subscriptionmethod' => 0,
+                'disablesmilies' => 0,
             ];
 
             $posthandler->set_data($post);
