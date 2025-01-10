@@ -80,7 +80,7 @@ final class Frontend
                     'tid' => (int) $tid,
                     'message' => $new_thread['message'],
                 ];
-                (new \rt\ChatGPT\Models\Post())->cacheNewReply($post_details);
+                (new \rt\ChatGPT\Models\ThreadModel())->cacheNewReply($post_details);
             }
         }
 
@@ -95,7 +95,7 @@ final class Frontend
                 'message' => $new_thread['message'],
             ];
 
-            (new \rt\ChatGPT\Models\Moderation())->cacheThreadForModeration($data);
+            (new \rt\ChatGPT\Models\ModerationModel())->cacheThreadForModeration($data);
         }
     }
 }

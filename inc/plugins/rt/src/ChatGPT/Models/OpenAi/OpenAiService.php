@@ -11,9 +11,11 @@
 
 declare(strict_types=1);
 
-namespace rt\ChatGPT\Models;
+namespace rt\ChatGPT\Models\OpenAi;
 
-abstract class AbstractModel
+use const rt\ChatGPT\Models\TIME_NOW;
+
+abstract class OpenAiService
 {
     protected \MyBB $mybb;
     protected string $method;
@@ -35,6 +37,8 @@ abstract class AbstractModel
     {
         global $mybb;
 
+        $this->mybb = $mybb;
+
         $this->api_key = $mybb->settings['rt_chatgpt_openai_key'] ?? '';
 
         $this->headers = [
@@ -49,7 +53,7 @@ abstract class AbstractModel
      * @return array
      * @throws \Exception
      */
-    protected function sendRequest(string $url, string $message): array
+    protected function api(string $url, string $message): array
     {
         $opts = [];
         if (isset($this->method))
@@ -75,9 +79,15 @@ abstract class AbstractModel
         }
         if (isset($this->prompt))
         {
-            $opts['data']['messages'][] = [
-                'role' => 'user',
-                'content' => $this->prompt . $message
+            $opts['data']['messages'] = [
+                [
+                    'role' => $this->_getRole('system'),
+                    'content' => $this->prompt
+                ],
+                [
+                    'role' => $this->_getRole('user'),
+                    'content' => $message
+                ],
             ];
         }
         if (isset($this->top_p))
@@ -162,6 +172,18 @@ abstract class AbstractModel
         $db->insert_query("rt_chatgpt_logs", $data);
     }
 
-    protected abstract function setRequest(string $message): bool;
-    protected abstract function getResponse();
+    /**
+     * Get correct role for models
+     * @param string $role
+     * @return string
+     */
+    private function _getRole(string $role): string
+    {
+        if (($this->model === 'o1' || $this->model === 'o1-mini') && $role === 'system')
+        {
+            $role = 'developer';
+        }
+
+        return $role;
+    }
 }

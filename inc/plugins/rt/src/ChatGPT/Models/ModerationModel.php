@@ -13,40 +13,16 @@ declare(strict_types=1);
 
 namespace rt\ChatGPT\Models;
 
-class Moderation extends AbstractModel
-{
-    private array $response;
-    private string $url = 'https://api.openai.com/v1/moderations';
+use rt\ChatGPT\Models\OpenAi\OpenAiModel;
 
+class ModerationModel extends OpenAiModel
+{
     public function __construct()
     {
         parent::__construct();
 
         $this->action = 'OpenAI Assistant - Thread moderation';
         $this->method = 'POST';
-    }
-
-    public function setRequest(string $message): bool
-    {
-        $this->input = $message;
-
-        try
-        {
-            $this->response = $this->sendRequest($this->url, $message);
-
-            if (!empty($this->response))
-            {
-                return true;
-            }
-        }
-        catch (\Exception $e)
-        {
-            self::logApiStatus($this->action, $e->getMessage(), 0);
-
-            return false;
-        }
-
-        return false;
     }
 
     public function cacheThreadForModeration(array $thread): bool
@@ -61,19 +37,6 @@ class Moderation extends AbstractModel
         return true;
     }
 
-    public function getResponse(): array
-    {
-        if (!isset($this->response['results']))
-        {
-            return [];
-        }
-
-        // Log successful api response
-        $api_score = json_encode($this->response['results'][0]['category_scores']);
-        self::logApiStatus($this->action, $api_score, 1, $this->response['id']);
-
-        return $this->response;
-    }
 
     public function moderateThread(): void
     {
@@ -94,7 +57,7 @@ class Moderation extends AbstractModel
             $query = $db->simple_select('threads', '*', "tid = '{$db->escape_string($row['tid'])}'");
             $thread = $db->fetch_array($query);
 
-            // Post not found in DB
+            // ThreadModel not found in DB
             if (!$thread)
             {
                 continue;
@@ -102,23 +65,13 @@ class Moderation extends AbstractModel
 
             $message = "{$row['subject']} - {$row['message']}";
 
-            // Send request to the API
-            $openai = $this->setRequest($message);
-
-            // Failed to retrieve data from API
-            if (!$openai)
+            try
             {
-                self::logApiStatus($this->action, 'Unable to send setRequest() method.', 0);
-                continue;
+                // Send request to the API
+                $moderation = $this->moderation($message);
             }
-
-            // Get API answer
-            $moderation = $this->getResponse();
-
-            // Failed to retrieve message from API
-            if (empty($moderation))
+            catch (\Exception $e)
             {
-                self::logApiStatus($this->action, 'Unable to receive data from getResponse() method.', 0);
                 continue;
             }
 

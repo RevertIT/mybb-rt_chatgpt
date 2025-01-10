@@ -21,7 +21,7 @@ class Core
         'description' => 'RT ChatGPT utilizes OpenAI API to generate responses and do specific tasks. <b>This plugin uses task system which will run every 5 minutes.</b>',
         'author' => 'RevertIT',
         'authorsite' => 'https://github.com/RevertIT/',
-        'version' => '1.3',
+        'version' => '1.4',
         'compatibility' => '18*',
         'codename' => 'rt_chatgpt',
         'prefix' => 'rt_chatgpt',
@@ -122,11 +122,12 @@ class Core
                     "description" => "Select which model will be used when generating an API responses to the posts/threads",
                     "optionscode" => <<<SELECT
                     select
-                    gpt-4o=GPT-4o (New)
+                    gpt-4o-mini=GPT-4o mini
+                    gpt-4o=GPT-4o
                     gpt-4=GPT-4
                     gpt-4-turbo=GPT-4 Turbo
-                    gpt-3.5-turbo=GPT 3.5 Turbo
-                    gpt-3.5-turbo-16k=GPT 3.5 Turbo (version with larger context window)
+                    o1=o1
+                    o1-mini=o1 mini
                     SELECT,
                     "value" => "gpt-3.5-turbo",
                 ],
@@ -155,7 +156,7 @@ class Core
                     "value" => 0
                 ],
                 "moderation_model" => [
-                    "title" => "[ChatGPT Moderation] - Moderation model",
+                    "title" => "[ChatGPT ModerationModel] - ModerationModel model",
                     "description" => "Select by comma separation which content should the ChatGPT check for:
 					  <br>1 = hate
 					  <br>2 = hate/threatening
@@ -168,13 +169,13 @@ class Core
                     "value" => "1,2,5,6,7"
                 ],
                 "moderation_forums" => [
-                    "title" => "[ChatGPT Moderation] - Forums to watch",
+                    "title" => "[ChatGPT ModerationModel] - Forums to watch",
                     "description" => "Select which forums should the ChatGPT look for and filter the newly posted content based on moderation score.",
                     "optionscode" => "forumselect",
                     "value" => '',
                 ],
                 "moderation_usergroups" => [
-                    "title" => "[ChatGPT Moderation] - Usergroups to watch",
+                    "title" => "[ChatGPT ModerationModel] - Usergroups to watch",
                     "description" => "Select which usergroups should the ChatGPT watch and moderate. (Selected groups will always have all posts checked before they publicly appear)",
                     "optionscode" => "groupselect",
                     "value" => '0,1',
