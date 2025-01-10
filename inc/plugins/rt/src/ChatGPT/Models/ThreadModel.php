@@ -53,7 +53,8 @@ class ThreadModel extends OpenAiModel
         // Set up posthandler.
         require_once MYBB_ROOT."inc/datahandlers/post.php";
 
-        foreach ($cached_data as $row)
+		$toRemove = [];
+        foreach ($cached_data as $key => $row)
         {
             $query = $db->simple_select('posts', '*', "pid = '{$db->escape_string($row['pid'])}'");
             $post = $db->fetch_array($query);
@@ -61,6 +62,7 @@ class ThreadModel extends OpenAiModel
             // ThreadModel not found in DB
             if (!$post)
             {
+				$toRemove[] = $row['pid'];
                 continue;
             }
 
@@ -106,9 +108,22 @@ class ThreadModel extends OpenAiModel
             {
                 $posthandler->update_post();
             }
+
+			$toRemove[] = $row['pid'];
         }
 
-        $cache->delete('rt_chatgpt_reply');
-    }
+		// Remove from cache only replies which were successfully updated from api or post doesn't exist
+		if (!empty($toRemove))
+		{
+			foreach ($toRemove as $pid)
+			{
+				$cached_data = array_filter($cached_data, function ($row) use ($pid)
+				{
+					return $row['pid'] !== $pid;
+				});
+			}
 
+			$cache->update('rt_chatgpt_reply', $cached_data);
+		}
+	}
 }
